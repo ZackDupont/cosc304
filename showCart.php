@@ -1,3 +1,9 @@
+<?php
+  session_start();
+  if(!isset($_SESSION['username'])){
+    header('Location: index.php');
+  }
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,7 +14,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Jarvis</title>
+    <title>Your Shopping Cart</title>
 
     <!-- Bootstrap core CSS -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -28,22 +34,42 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
       <div class="container">
-        <a class="navbar-brand" href="index.html">Jarvis</a>
+        <a class="navbar-brand" href="index.php">Jarvis</a>
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
           Menu
           <i class="fa fa-bars"></i>
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
           <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="index.html">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="login.html">Login</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="login.html">NEW ITEM</a>
-            </li>
+            <?
+            if(!isset($_SESSION['username'])){
+              echo('<li class="nav-item">');
+              echo('<a class="nav-link" href="index.php">Home</a>');
+              echo('</li>');
+              echo('<li class="nav-item">');
+              echo('<a class="nav-link" href="login.php">Login</a>');
+              echo('</li>');
+            }else{
+              echo ('<li class="nav-item">');
+              echo ('<a class="nav-link" href="./logout.php"> Hello, ' . $_SESSION['username'] . '!</a>');
+              echo('</li>');
+
+            echo('<li class="nav-item">');
+            echo('<a class="nav-link" href="shop.php">Shop</a>');
+            echo('</li>');
+
+            if(isset($_SESSION['productList'])){
+            echo('<li class="nav-item">');
+            echo('<a class="nav-link" href="showCart.php"> <i class="fa fa-shopping-cart" style="font-size:17px"></i><span class="badge">'. count($_SESSION['productList']) . '</span></a>');
+            echo('</li>');
+            }else{
+            echo('<li class="nav-item">');
+            echo('<a class="nav-link" href="showCart.php"> <i class="fa fa-shopping-cart" style="font-size:17px"></i><span class="badge">0</span></a>');
+            echo('</li>');
+          }
+
+          }
+            ?>
           </ul>
         </div>
       </div>
@@ -51,28 +77,51 @@
 
     <!-- Page Header -->
     <header class="masthead" style="background-image: url('img/chemistry.jpg')">
-      <div class="overlay"></div>
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-8 col-md-10 mx-auto">
-            <div class="site-heading">
-              <h1>Jarvis</h1>
-              <span class="subheading">Zack Dupont and Gage Buchanan</span>
-            </div>
-          </div>
-        </div>
-      </div>
+      <br /><div class="overlay"></div><br />
     </header>
+
 
     <!-- Main Content -->
     <div class="container">
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
           <div class="post-preview">
-          <h1 align='center'> About Us </h1>
-          <p align='justify'>
-            Jarvis is a company built around implementing machine learning and artificial intelligence combined with cell stimulation and DNA editing techniques mainly through CRISPR/Cas9 systems to alleviate sickness and cure formerly incurable diseases. CRISPR/Cas9 was a breakthrough in DNA editing techniques and combined with significant advances in AI algorithms, we have developed a system that can produce specific microorganisms capable of editing DNA sequences of a plethora of foreign bacteria, viruses or even host DNA to produce an exceptional outcome of a disease-free host.
-          </p>
+
+
+          <?
+          // Get the current list of products
+                $productList = null;
+          if (isset($_SESSION['productList'])){
+          	$productList = $_SESSION['productList'];
+          	echo("<h1 align='center'>Your Shopping Cart</h1>");
+          	echo("<table class='table' align='center'><tr><thead><th width='150'>Product Id</th><th>Product Name</th><th>Quantity</th>");
+          	echo("<th>Price</th><th>Subtotal</th></tr></thead>");
+
+          	$total =0;
+          	foreach ($productList as $id => $prod) {
+          		echo("<tr><td>". $prod['id'] . "</td>");
+          		echo("<td>" . $prod['name'] . "</td>");
+
+          		echo("<td align=\"center\"><input type='number' name='quantity' min='1' max='100' value='".$prod['quantity']."'/></td>");
+          		$price = $prod['price'];
+
+          		echo("<td align=\"right\">$".str_replace("USD","$",money_format('%i',$price))."</td>");
+          		echo("<td align=\"right\">$" . str_replace("USD","$",money_format('%i',$prod['quantity']*$price)) . "</td><td>X</td></tr>");
+          		echo("</tr>");
+          		$total = $total +$prod['quantity']*$price;
+          	}
+          	echo("<tr><td colspan=\"4\" align=\"right\"><b>Order Total</b></td><td align=\"right\">".str_replace("USD","$",money_format('%i',$total))."</td></tr>");
+          	echo("</table>");
+
+          	echo("<h3 align='center'><a href=\"checkout.php\">Check Out</a></h3>");
+          } else{
+          	echo("<H1 align='center'>Your shopping cart is empty!</H1>");
+          }
+          ?>
+					<p></p>
+					<h3 align='center'><a href='shop.php'>Continue Shopping </a></h3>
+          </body>
+          </html>
         </div>
       </div>
     </div>
@@ -111,7 +160,7 @@
                 </a>
               </li>
             </ul>
-            <p class="copyright text-muted">Copyright &copy; Jarvis 2017</p>
+            <p class="copyright text-muted">Copyright &copy; Zack Dupont & Gage Buchanan</p>
           </div>
         </div>
       </div>

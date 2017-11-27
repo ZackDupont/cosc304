@@ -1,10 +1,17 @@
+<?php
+  session_start();
+  if(isset($_SESSION['username'])){
+    header('Location: index.php');
+  }
+
+  ?>
 <!DOCTYPE html>
 <html lang="en" >
 <head>
   <meta charset="UTF-8">
   <title>Login</title>
   <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
-<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
   <!-- Bootstrap core CSS -->
   <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -28,10 +35,10 @@
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
           <li class="nav-item">
-            <a class="nav-link" href="index.html">Home</a>
+            <a class="nav-link" href="index.php">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="login.html">Register</a>
+            <a class="nav-link" href="register.php">Register</a>
           </li>
         </ul>
       </div>
@@ -201,29 +208,25 @@ footer a, footer a:link {
     </style>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
-
 </head>
 
 <body>
   <div class="wrapper">
-  <form class="login" name="login" action='validateLogin.php' >
+  <form class="login" id='login'method='POST' action='./validateLogin.php' onsubmit="validate()">
     <p class="title">Log in</p>
-    <input type="text" placeholder="Username" autofocus/>
-    <i class="fa fa-user"></i>
-    <input type="password" placeholder="Password" />
-    <i class="fa fa-key"></i>
-    <a href="./register.html">Need an Account?</a>
+    Username:<input type="text" name='username' id='username' placeholder="Username" autofocus required/>
+    Password:<input type="password" name='password' id='password' placeholder="Password" required/>
+    <div id="errMsg">
+      <?php if(!empty($_SESSION['errMsg'])) { echo $_SESSION['errMsg']; } ?>
+    </div>
+    <?php unset($_SESSION['errMsg']); ?>
+    <a href="./register.php">Need an Account?</a>
     <button>
       <i class="spinner"></i>
       <span class="state">Log in</span>
     </button>
-
-    </p>
   </form>
 </div>
   <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
-
-    <script  src="js/index.js"></script>
-
 </body>
 </html>

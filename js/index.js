@@ -1,5 +1,5 @@
 var working = false;
-$('.login').on('submit', function(e) {
+$('#login').on('submit',function() {
   e.preventDefault();
   if (working) return;
   working = true;
@@ -9,16 +9,11 @@ $('.login').on('submit', function(e) {
   $state.html('Authenticating');
 
   setTimeout(function() {
-    $this.addClass('ok');
-    $state.html('Welcome!');
-
     setTimeout(function() {
       $state.html('Log in');
-      $this.removeClass('ok loading');
+      $this.removeClass('loading');
       working = false;
     }, 4000);
-
-
   }, 3000);
 
 });
