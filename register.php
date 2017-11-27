@@ -1,8 +1,14 @@
+<?
+session_start();
+if(isset($_SESSION['username'])){
+  header('Location: index.php');
+}
+?>
 <!DOCTYPE html>
 <html lang="en" >
 <head>
   <meta charset="UTF-8">
-  <title>Login</title>
+  <title>Register</title>
   <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
@@ -20,7 +26,7 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
     <div class="container">
-      <a class="navbar-brand" href="index.html">Jarvis</a>
+      <a class="navbar-brand" href="index.php">Jarvis</a>
       <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
         Menu
         <i class="fa fa-bars"></i>
@@ -28,10 +34,10 @@
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
           <li class="nav-item">
-            <a class="nav-link" href="index.html">Home</a>
+            <a class="nav-link" href="index.php">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="login.html">Login</a>
+            <a class="nav-link" href="login.php">Login</a>
           </li>
         </ul>
       </div>
@@ -206,13 +212,44 @@ footer a, footer a:link {
 
 <body>
   <div class="wrapper">
-  <form class="login" >
-    <p class="title">Resgister</p>
-    <input type="text" placeholder="Username" autofocus/>
-    <i class="fa fa-user"></i>
-    <input type="password" placeholder="Password" />
-    <i class="fa fa-key"></i>
-    <a href="login.html">Already have an account?</a>
+  <form class="login" method="POST" action="./registerUser.php" >
+    <p class="title">Register</p>
+    <?php if(!empty($_SESSION['errMsg'])) { echo $_SESSION['errMsg']; } ?>
+    <?php unset($_SESSION['errMsg']); ?>
+    Username:<input type="text" name="username"placeholder="Username" autofocus required/>
+    Password:<input type="password" name="password"placeholder="Password" required/>
+    Email:<input type="email" name="email"placeholder="Email" required/>
+    DNA:<input type="text" name="dna" placeholder="DNA sequence" required/>
+    Address:<input type="text" name="address" placeholder="Address" required/>
+    <input type="text" name="city" placeholder="City" required/>
+    Province:
+    <select name="province"required>
+      <option value="">Please select an option</option>
+      <option value="AB">Alberta</option>
+      <option value="BC">British Columbia</option>
+      <option value="MB">Manitoba</option>
+      <option value="NB">New Brunswick</option>
+      <option value="NL">Newfoundland and Labrador</option>
+      <option value="NT">Northwest Territories</option>
+      <option value="NS">Nova Scotia</option>
+      <option value="NU">Nunavut</option>
+      <option value="ON">Ontario</option>
+      <option value="PEI">Prince Edward Island</option>
+      <option value="QC">Quebec</option>
+      <option value="SK">Saskatchewan</option>
+      <option value="YT">Yukon</option>
+    </select>
+    <p></p>
+    Postal Code:<input type="text" name="postal" pattern="[A-Za-z][0-9][A-Za-z] [0-9][A-Za-z][0-9]" placeholder="Ex. V4R 5B3" required/>
+    Country:
+    <br />
+    <select name="country"required>
+      <option value="">Please select an option</option>
+      <option value="Canada">Canada</option>
+    </select>
+    <p></p>
+    Doctor ID:<input type="text" name="docid" placeholder="Doctor ID" required/>
+    <a href="login.php">Already have an account?</a>
     <button>
       <i class="spinner"></i>
       <span class="state">Register</span>
