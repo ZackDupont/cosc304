@@ -14,7 +14,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Shop</title>
+    <title>My Account</title>
 
     <!-- Bootstrap core CSS -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -85,56 +85,48 @@
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
           <div class="post-preview">
-            <h1 align='center'>SHOP</h1>
+            <h1 align='center'>My Account</h1>
 
-
-    <!-- Search Form -->
-    <form id ='search' method="GET" align='center'>
-      <input type="text" name='productName' placeholder="Search for a product"/>
-    </form>
-    <br />
 
           <!-- PHP for search-->
           <?
-          $name = "";
-          $hasParameter = false;
-          if (isset($_GET['productName'])){
-            $name = $_GET['productName'];
-          }
-          $sql = "";
-
-          if ($name == "") {
-            echo("<h1 align='center'>All Products</h1>");
-            $sql = "SELECT cure_id, cure_name, injection_site, injection_timing, num_injections, special_reqs, cure_desc, cure_availability, price, cure_image FROM Cure";
-          } else {
-            echo("<h1 align='center'>Products containing '" . $name . "'</h1>");
-            $hasParameter = true;
-            $sql = "SELECT cure_id, cure_name, injection_site, injection_timing, num_injections, special_reqs, cure_desc, cure_availability, price, cure_image FROM Cure WHERE cure_name LIKE ? ";
-            $name = '%' . $name . '%';
-          }
+          $username = $_SESSION["username"];
+          $id = ";"
           // include database connection
           include 'dbConnection.php';
-          // query
-          $stmt = null;
-          if($hasParameter){
-          $stmt = $connection->prepare($sql);
-          $stmt->bind_param( "s", $name);
-          } else {
-            $stmt = $connection->prepare($sql);
-          }
+
+          // Get current user's id
+          $stmt = $connection->prepare("SELECT * FROM Users WHERE user_name = ?");
+          $stmt->bind_param( "s", $username);
           $stmt->execute();
           $stmt->store_result();
-          $stmt->bind_result($col1,$col2,$col3,$col4,$col5,$col6,$col7,$col8,$col9,$col10);
-          $rows = $stmt->num_rows;
+          $stmt->bind_result($col1,$col2,$col3,$col4,$col5,$col6,$col7,$col8,$col9,$col10,$col11);
 
-
-          echo("<table id='productTable'class='table table-hover' align='center'><thead><tr><th>Cure Image</th><th>Cure Name</th><th>Price</th><th></th></tr></thead>");
-
+          echo("<table class='table table-striped'>");
           while($stmt->fetch()){
-            echo("<tr><td><img src='".$col10."'/></td><td><a style='text-decoration:none' href='cureDesc.php?id=".$col1."'/>". $col2 ."</a></td><td>$". $col9 ."</td><td><a style='text-decoration:none' href='addToCart.php?id=" .$col1. "&name=" .$col2. "&price=" .$col9. "'>Add&nbsp;To&nbsp;Cart</a></td></tr>");
+          echo("<tr><thead><th>User ID</th></thead></tr><tr><td colspan='4'>" . $col1 ."</td></tr>");
+          echo("<tr><thead><th>Username</th></thead></tr><tr><td colspan='4'>" . $col2 ."</td></tr>");
+          echo("<tr><thead><th>Password</th></thead></tr><tr><td colspan='4'>" . $col3 ."</td></tr>");
+          echo("<tr><thead><th>Email</th></thead></tr><tr><td colspan='4'>" . $col4 ."</td></tr>");
+          echo("<tr><thead><th>DNA</th></thead></tr><tr><td colspan='4'>" . $col5 ."</td></tr>");
+          echo("<tr><thead><th>Address</th></thead></tr><tr><td colspan='4'>" . $col6 ."</td></tr>");
+          echo("<tr><thead><th>City</th></thead></tr><tr><td colspan='4'>" . $col7 ."</td></tr>");
+          echo("<tr><thead><th>Province</th></thead></tr><tr><td colspan='4'>" . $col8 ."</td></tr>");
+          echo("<tr><thead><th>Postal Code</th></thead></tr><tr><td colspan='4'>" . $col9 ."</td></tr>");
+          echo("<tr><thead><th>Country</th></thead></tr><tr><td colspan='4'>" . $col10 ."</td></tr>");
+          echo("<tr><thead><th>Doctor ID</th></thead></tr><tr><td colspan='4'>" . $col11."</td></tr>");
           }
-          echo("</table");
-          mysqli_close($connection);
+          echo("</table>");
+          echo("<h3 align='center'><a href=\"logout.php\">Log Out</a></h3>");
+
+
+          // Get current user's id
+          $stmt = $connection->prepare("SELECT * FROM Orders WHERE user_id = ?");
+          $stmt->bind_param( "s", $username);
+          $stmt->execute();
+          $stmt->store_result();
+          $stmt->bind_result($col1,$col2,$col3,$col4,$col5,$col6,$col7,$col8,$col9,$col10,$col11);
+
           ?>
 
         </div>

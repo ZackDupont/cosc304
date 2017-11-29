@@ -48,7 +48,7 @@
               echo('</li>');
             }else{
               echo ('<li class="nav-item">');
-              echo ('<a class="nav-link" href="./logout.php"> Hello, ' . $_SESSION['username'] . '!</a>');
+              echo ('<a class="nav-link" href="./account.php"> Hello, ' . $_SESSION['username'] . '!</a>');
               echo('</li>');
 
               echo('<li class="nav-item">');

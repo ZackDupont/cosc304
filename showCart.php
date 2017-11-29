@@ -51,7 +51,7 @@
               echo('</li>');
             }else{
               echo ('<li class="nav-item">');
-              echo ('<a class="nav-link" href="./logout.php"> Hello, ' . $_SESSION['username'] . '!</a>');
+              echo ('<a class="nav-link" href="./account.php"> Hello, ' . $_SESSION['username'] . '!</a>');
               echo('</li>');
 
             echo('<li class="nav-item">');
@@ -102,18 +102,18 @@
           		echo("<tr><td>". $prod['id'] . "</td>");
           		echo("<td>" . $prod['name'] . "</td>");
 
-          		echo("<td align=\"center\"><input type='text' size='1' maxlength='2' id='itemQuantity' min='1' max='100' value='".$prod['quantity']."'/></form></td>");
+          		echo("<td align=\"center\"><input name='tbox' type='text' size='1' maxlength='2' min='1' max='100' value='".$prod['quantity']."'</td>");
               $price = $prod['price'];
 
           		echo("<td align=\"right\">$".str_replace("USD","$",money_format('%i',$price))."</td>");
-          		echo("<td align=\"right\">$" . str_replace("USD","$",money_format('%i',$prod['quantity']*$price)) . "</td><td>X</td></tr>");
+          		echo("<td align=\"right\">$" . str_replace("USD","$",money_format('%i',$prod['quantity']*$price)) . "</td><td><a href='deleteRow.php?id=".$id."'>Remove</a></td></tr>");
           		echo("</tr>");
           		$total = $total +$prod['quantity']*$price;
           	}
           	echo("<tr><td colspan=\"4\" align=\"right\"><b>Order Total</b></td><td align=\"right\">".str_replace("USD","$",money_format('%i',$total))."</td></tr>");
           	echo("</table>");
 
-            echo("<h3 align='center'><a href=\"showCart.php\">Update Cart</a></h3><p></p>");
+            echo("<h3 align='center'><a href='updateCart.php?id='>Update Cart</a></h3><p></p>");
           	echo("<h3 align='center'><a href=\"checkout.php\">Check Out</a></h3>");
           } else{
           	echo("<H1 align='center'>Your Shopping Cart is Empty!</H1>");

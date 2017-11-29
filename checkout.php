@@ -193,7 +193,7 @@ border-bottom-width: 4px;
               echo('</li>');
             }else{
               echo ('<li class="nav-item">');
-              echo ('<a class="nav-link" href="./logout.php"> Hello, ' . $_SESSION['username'] . '!</a>');
+              echo ('<a class="nav-link" href="./account.php"> Hello, ' . $_SESSION['username'] . '!</a>');
               echo('</li>');
 
             echo('<li class="nav-item">');
@@ -258,9 +258,9 @@ border-bottom-width: 4px;
             <div class="wrapper">
             <form class="login" method="POST" action="./order.php" >
               <p class="title">Enter Payment Info</p>
-              Card Number:<input type="text" name="cardNumber"placeholder="EX: 00001111222233333" pattern="[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]"autofocus required/>
-              Expiration Date:<input type="date" name="expiry"placeholder="MM/YY" pattern="[0-9][0-9]/[0-9][0-9]" required/>
-              CVV:<input type="text" name="cvv"placeholder="EX: 345" pattern="[0-9][0-9][0-9]" required/>
+              Card Number:<input type="text" name="cardNumber" maxlength='16'placeholder="EX: 00001111222233333" pattern="[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]"autofocus required/>
+              Expiration Date:<input type="date" name="expiry" maxlength='5' placeholder="MM/YY" pattern="[0-9][0-9]/[0-9][0-9]" required/>
+              CVV:<input type="text" name="cvv"placeholder="EX: 345" maxlength='3'pattern="[0-9][0-9][0-9]" required/>
               Card Type:
               <select name="cardType"required>
                 <option value="">Please select an option</option>
