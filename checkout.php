@@ -8,7 +8,149 @@
 <html lang="en">
 
   <head>
+    <style>
+    /* NOTE: The styles were added inline because Prefixfree needs access to your styles and they must be inlined if they are on local disk! */
 
+
+@keyframes spinner {
+0% {
+  transform: rotateZ(0deg);
+}
+100% {
+  transform: rotateZ(359deg);
+}
+}
+* {
+box-sizing: border-box;
+}
+
+.wrapper {
+display: flex;
+align-items: center;
+flex-direction: column;
+justify-content: center;
+width: 100%;
+min-height: 100%;
+padding: 20px;
+}
+
+.login {
+border-radius: 2px 2px 5px 5px;
+padding: 10px 20px 20px 20px;
+width: 100%;
+max-width: 320px;
+background: #ffffff;
+position: relative;
+padding-bottom: 80px;
+box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.3);
+}
+.login.loading button {
+max-height: 100%;
+padding-top: 50px;
+}
+.login.loading button .spinner {
+opacity: 1;
+top: 40%;
+}
+.login.ok button {
+background-color: #8bc34a;
+}
+.login.ok button .spinner {
+border-radius: 0;
+border-top-color: transparent;
+border-right-color: transparent;
+height: 20px;
+animation: none;
+transform: rotateZ(-45deg);
+}
+.login input {
+display: block;
+padding: 15px 10px;
+margin-bottom: 10px;
+width: 100%;
+border: 1px solid #ddd;
+transition: border-width 0.2s ease;
+border-radius: 2px;
+color: #ccc;
+}
+.login input + i.fa {
+color: #fff;
+font-size: 1em;
+position: absolute;
+margin-top: -47px;
+opacity: 0;
+left: 0;
+transition: all 0.1s ease-in;
+}
+.login input:focus {
+outline: none;
+color: #444;
+border-color: #2196F3;
+border-left-width: 35px;
+}
+.login input:focus + i.fa {
+opacity: 1;
+left: 30px;
+transition: all 0.25s ease-out;
+}
+.login a {
+font-size: 0.8em;
+color: #2196F3;
+text-decoration: none;
+}
+.login .title {
+color: #444;
+font-size: 1.2em;
+font-weight: bold;
+margin: 10px 0 30px 0;
+border-bottom: 1px solid #eee;
+padding-bottom: 20px;
+}
+.login button {
+width: 100%;
+height: 100%;
+padding: 10px 10px;
+background: #2196F3;
+color: #fff;
+display: block;
+border: none;
+margin-top: 20px;
+position: absolute;
+left: 0;
+bottom: 0;
+max-height: 60px;
+border: 0px solid rgba(0, 0, 0, 0.1);
+border-radius: 0 0 2px 2px;
+transform: rotateZ(0deg);
+transition: all 0.1s ease-out;
+border-bottom-width: 7px;
+}
+.login button .spinner {
+display: block;
+width: 40px;
+height: 40px;
+position: absolute;
+border: 4px solid #ffffff;
+border-top-color: rgba(255, 255, 255, 0.3);
+border-radius: 100%;
+left: 50%;
+top: 0;
+opacity: 0;
+margin-left: -20px;
+margin-top: -20px;
+animation: spinner 0.6s infinite linear;
+transition: top 0.3s 0.3s ease, opacity 0.3s 0.3s ease, border-radius 0.3s ease;
+box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.2);
+}
+.login:not(.loading) button:hover {
+box-shadow: 0px 1px 3px #2196F3;
+}
+.login:not(.loading) button:focus {
+border-bottom-width: 4px;
+}
+
+
+  </style>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
@@ -87,13 +229,12 @@
         <div class="col-lg-8 col-md-10 mx-auto">
           <div class="post-preview">
 
-
           <?
           // Get the current list of products
           $productList = null;
           if (isset($_SESSION['productList'])){
           	$productList = $_SESSION['productList'];
-          	echo("<h1 align='center'>Your Shopping Cart</h1>");
+          	echo("<h1 align='center'>Review Your Order</h1>");
           	echo("<table class='table' align='center'><tr><thead><th width='150'>Product Id</th><th>Product Name</th><th>Quantity</th>");
           	echo("<th>Price</th><th>Subtotal</th></tr></thead>");
 
@@ -102,19 +243,40 @@
           		echo("<tr><td>". $prod['id'] . "</td>");
           		echo("<td>" . $prod['name'] . "</td>");
 
-          		echo("<td align=\"center\"><input type='text' size='1' maxlength='2' id='itemQuantity' min='1' max='100' value='".$prod['quantity']."'/></form></td>");
-              $price = $prod['price'];
+          		echo("<td align=\"center\">".$prod['quantity']."</td>");
+          		$price = $prod['price'];
 
           		echo("<td align=\"right\">$".str_replace("USD","$",money_format('%i',$price))."</td>");
-          		echo("<td align=\"right\">$" . str_replace("USD","$",money_format('%i',$prod['quantity']*$price)) . "</td><td>X</td></tr>");
+          		echo("<td align=\"right\">$" . str_replace("USD","$",money_format('%i',$prod['quantity']*$price)) . "</td></tr>");
           		echo("</tr>");
           		$total = $total +$prod['quantity']*$price;
           	}
-          	echo("<tr><td colspan=\"4\" align=\"right\"><b>Order Total</b></td><td align=\"right\">".str_replace("USD","$",money_format('%i',$total))."</td></tr>");
+            echo("<tr><td colspan=\"4\" align=\"right\"><b>Shipping</b></td><td align=\"right\">".str_replace("USD","$",money_format('%i',$total))."</td></tr>");
+            echo("<tr><td colspan=\"4\" align=\"right\"><b>Order Total</b></td><td align=\"right\">".str_replace("USD","$",money_format('%i',$total))."</td></tr>");
           	echo("</table>");
+            ?>
+            <div class="wrapper">
+            <form class="login" method="POST" action="./order.php" >
+              <p class="title">Enter Payment Info</p>
+              Card Number:<input type="text" name="cardNumber"placeholder="EX: 00001111222233333" pattern="[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]"autofocus required/>
+              Expiration Date:<input type="date" name="expiry"placeholder="MM/YY" pattern="[0-9][0-9]/[0-9][0-9]" required/>
+              CVV:<input type="text" name="cvv"placeholder="EX: 345" pattern="[0-9][0-9][0-9]" required/>
+              Card Type:
+              <select name="cardType"required>
+                <option value="">Please select an option</option>
+                <option value="VISA">VISA</option>
+                <option value="Mastercard">Mastercard</option>
+                <option value="AMEX">AMEX</option>
+              </select>
+              <button>
+                <i class="spinner"></i>
+                <span class="state">Place Order</span>
+              </button>
 
-            echo("<h3 align='center'><a href=\"showCart.php\">Update Cart</a></h3><p></p>");
-          	echo("<h3 align='center'><a href=\"checkout.php\">Check Out</a></h3>");
+              </p>
+            </form>
+          </div>
+            <?
           } else{
           	echo("<H1 align='center'>Your Shopping Cart is Empty!</H1>");
           }

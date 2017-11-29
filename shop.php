@@ -105,11 +105,11 @@
 
           if ($name == "") {
             echo("<h1 align='center'>All Products</h1>");
-            $sql = "SELECT cure_id, cure_name, injection_site, injection_timing, num_injections, special_reqs, cure_desc, cure_availability, price FROM Cure";
+            $sql = "SELECT cure_id, cure_name, injection_site, injection_timing, num_injections, special_reqs, cure_desc, cure_availability, price, cure_image FROM Cure";
           } else {
             echo("<h1 align='center'>Products containing '" . $name . "'</h1>");
             $hasParameter = true;
-            $sql = "SELECT cure_id, cure_name, injection_site, injection_timing, num_injections, special_reqs, cure_desc, cure_availability, price FROM Cure WHERE cure_name LIKE ? ";
+            $sql = "SELECT cure_id, cure_name, injection_site, injection_timing, num_injections, special_reqs, cure_desc, cure_availability, price, cure_image FROM Cure WHERE cure_name LIKE ? ";
             $name = '%' . $name . '%';
           }
           // include database connection
@@ -124,17 +124,16 @@
           }
           $stmt->execute();
           $stmt->store_result();
-          $stmt->bind_result($col1,$col2,$col3,$col4,$col5,$col6,$col7,$col8,$col9);
+          $stmt->bind_result($col1,$col2,$col3,$col4,$col5,$col6,$col7,$col8,$col9,$col10);
           $rows = $stmt->num_rows;
 
 
-          echo("<table id='productTable'class='table table-hover' align='center' ><thead><tr><th>Cure Name</th><th>Price</th><th width='150'></th></tr></thead>");
+          echo("<table id='productTable'class='table table-hover' align='center'><thead><tr><th>Cure Image</th><th>Cure Name</th><th>Price</th><th width='150'></th></tr></thead>");
 
           while($stmt->fetch()){
-            echo("<tr><td><a style='text-decoration:none' href='#'>". $col2 ."</a></td><td>$". $col9 ."</td><td><a style='text-decoration:none' href='addToCart.php?id=" .$col1. "&name=" .$col2. "&price=" .$col9. "'>add to cart</a></td></tr>");
+            echo("<tr><td><img src='".$col10."'/></td><td><a style='text-decoration:none' href='#'>". $col2 ."</a></td><td>$". $col9 ."</td><td><a style='text-decoration:none' href='addToCart.php?id=" .$col1. "&name=" .$col2. "&price=" .$col9. "'>add to cart</a></td></tr>");
           }
           echo("</table");
-
           mysqli_close($connection);
           ?>
 
