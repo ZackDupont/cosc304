@@ -195,14 +195,15 @@ border-bottom-width: 4px;
               echo('<li class="nav-item">');
               echo('<a class="nav-link" href="login.php">Login</a>');
               echo('</li>');
-            }else{
+            }
+            else{
               echo ('<li class="nav-item">');
               echo ('<a class="nav-link" href="./account.php"> Hello, ' . $_SESSION['username'] . '!</a>');
               echo('</li>');
 
-            echo('<li class="nav-item">');
-            echo('<a class="nav-link" href="shop.php">Shop</a>');
-            echo('</li>');
+              echo('<li class="nav-item">');
+              echo('<a class="nav-link" href="shop.php">Shop</a>');
+              echo('</li>');
 
             if(isset($_SESSION['productList'])){
             echo('<li class="nav-item">');
@@ -212,11 +213,10 @@ border-bottom-width: 4px;
             echo('<li class="nav-item">');
             echo('<a class="nav-link" href="showCart.php"> <i class="fa fa-shopping-cart" style="font-size:17px"></i><span class="badge">0</span></a>');
             echo('</li>');
-          }
-          echo('<li class="nav-item">');
-          echo('<a class="nav-link" href="logout.php">Sign Out</a>');
-          echo('</li>');
-
+            }
+            echo('<li class="nav-item">');
+            echo('<a class="nav-link" href="logout.php">Sign Out</a>');
+            echo('</li>');
           }
             ?>
           </ul>
@@ -331,25 +331,44 @@ border-bottom-width: 4px;
                     if (isset($_SESSION['productList'])){
                       $productList = $_SESSION['productList'];
 
+                      $cname="";
+                      $quant = "";
                       // Get cures and quantity in current order
-                      $stmt = $connection->prepare("SELECT cure_name, price, quantity, order_total FROM Cure, OrderQuantity, Orders WHERE OrderQuantity.cure_id = Cure.cure_id AND OrderQuantity.order_id = Orders.order_id AND Orders.order_id = ?");
+                      $stmt = $connection->prepare("SELECT Cure.cure_id, cure_name, price, quantity, order_total FROM Cure, OrderQuantity, Orders WHERE OrderQuantity.cure_id = Cure.cure_id AND OrderQuantity.order_id = Orders.order_id AND Orders.order_id = ?");
                       $stmt->bind_param( "i", $orderId);
                       $stmt->execute();
                       $stmt->store_result();
-                      $stmt->bind_result($col1,$col2,$col3,$col4);
-
+                      $stmt->bind_result($col1,$col2,$col3,$col4,$col5);
 
                       echo("<h1 align='center'>Order Summary</h1>");
                       echo("<h2 align='center'>Order Id: " . $orderId. "</h2>");
                       echo("<table class='table' align='center'><tr><thead><th>Items</th><th>Quantity</th><th>Price</th><th>Subtotal</th></thead>");
 
                       while($stmt->fetch()){
-                        $sub = str_replace("USD","$",money_format('%i',$col2*$col3));
-                        echo("<tr><td>" . $col1 . "</td><td>". $col3 ."</td><td>$". $col2 ."</td><td>$" .$sub ."</td></tr>");
+                        $cname = $col2;
+                        $quant = $col4;
+                        $sub = str_replace("USD","$",money_format('%i',$col3*$col4));
+                        echo("<tr><td>" . $col2 . "</td><td>". $col4 ."</td><td>$". $col5 ."</td><td>$" .$sub ."</td></tr>");
                       }
                       echo("<tr><td colspan=\"3\" align=\"right\"><b>Order Total (Shipping and Taxes Included)</b></td><td align=\"right\">$".str_replace("USD","$",money_format('%i',$col4+$shipping))."</td></tr>");
                       echo("</table>");
 
+                      $cid = $col1;
+
+                      // Check and update cure availability
+                      $stmt = $connection->prepare("SELECT cure_availability FROM Cure WHERE cure_id = ?");
+                      $stmt->bind_param( "i", $cid);
+                      $stmt->execute();
+                      $stmt->store_result();
+                      $stmt->bind_result($col1);
+
+                      if($quant > $col1){
+                        $stmt = $connection->prepare("UPDATE Cure SET cure_availability = cure_availability - $col4 WHERE cure_id = ?");
+                        $stmt->bind_param( "i", $cid);
+                        $stmt->execute();
+                      }else{
+                        echo("<h3 align='center'>Currently Out of " . $cname . "</h3>");
+                      }
 
                       echo("<h2 align='center'>Shipping Info</h2>");
                       // Select shipping info from current order
@@ -426,7 +445,7 @@ border-bottom-width: 4px;
                 </a>
               </li>
               <li class="list-inline-item">
-                <a href="#">
+                <a href="https://github.com/zdupo067/cosc304">
                   <span class="fa-stack fa-lg">
                     <i class="fa fa-circle fa-stack-2x"></i>
                     <i class="fa fa-github fa-stack-1x fa-inverse"></i>

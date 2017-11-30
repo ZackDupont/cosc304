@@ -1,6 +1,6 @@
 <?
 session_start();
-if(isset($_SESSION['username'])){
+if(!isset($_SESSION['admin'])){
   header('Location: index.php');
 }
 ?>
@@ -35,9 +35,6 @@ if(isset($_SESSION['username'])){
         <ul class="navbar-nav ml-auto">
           <li class="nav-item">
             <a class="nav-link" href="index.php">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="login.php">Login</a>
           </li>
         </ul>
       </div>
@@ -213,7 +210,7 @@ footer a, footer a:link {
 <body>
   <div class="wrapper">
   <form class="login" method="POST" action="./registerUser.php" >
-    <p class="title">Register</p>
+    <p class="title">Register User</p>
     <?php if(!empty($_SESSION['errMsg'])) { echo $_SESSION['errMsg']; } ?>
     <?php unset($_SESSION['errMsg']); ?>
     Username:<input type="text" name="username"placeholder="Username" autofocus required/>
@@ -249,7 +246,6 @@ footer a, footer a:link {
     </select>
     <p></p>
     Doctor ID:<input type="text" name="docid" placeholder="Doctor ID" required/>
-    <a href="login.php">Already have an account?</a>
     <button>
       <i class="spinner"></i>
       <span class="state">Register</span>

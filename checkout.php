@@ -191,14 +191,15 @@ border-bottom-width: 4px;
               echo('<li class="nav-item">');
               echo('<a class="nav-link" href="login.php">Login</a>');
               echo('</li>');
-            }else{
+            }
+            else{
               echo ('<li class="nav-item">');
               echo ('<a class="nav-link" href="./account.php"> Hello, ' . $_SESSION['username'] . '!</a>');
               echo('</li>');
 
-            echo('<li class="nav-item">');
-            echo('<a class="nav-link" href="shop.php">Shop</a>');
-            echo('</li>');
+              echo('<li class="nav-item">');
+              echo('<a class="nav-link" href="shop.php">Shop</a>');
+              echo('</li>');
 
             if(isset($_SESSION['productList'])){
             echo('<li class="nav-item">');
@@ -208,10 +209,10 @@ border-bottom-width: 4px;
             echo('<li class="nav-item">');
             echo('<a class="nav-link" href="showCart.php"> <i class="fa fa-shopping-cart" style="font-size:17px"></i><span class="badge">0</span></a>');
             echo('</li>');
-          }
-          echo('<li class="nav-item">');
-          echo('<a class="nav-link" href="logout.php">Sign Out</a>');
-          echo('</li>');
+            }
+            echo('<li class="nav-item">');
+            echo('<a class="nav-link" href="logout.php">Sign Out</a>');
+            echo('</li>');
           }
             ?>
           </ul>
@@ -317,7 +318,7 @@ border-bottom-width: 4px;
                 </a>
               </li>
               <li class="list-inline-item">
-                <a href="#">
+                <a href="https://github.com/zdupo067/cosc304">
                   <span class="fa-stack fa-lg">
                     <i class="fa fa-circle fa-stack-2x"></i>
                     <i class="fa fa-github fa-stack-1x fa-inverse"></i>

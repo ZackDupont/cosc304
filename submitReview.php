@@ -28,7 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET"){
     $rating= $_GET["rating"];
 
     $sql = $connection->prepare("INSERT INTO Review (review_rating, review_desc, user_id, cure_id)VALUES (?,?,?,?)");
-    $sql->bind_param("ssii",$rating,$comment,$userid,$cid);
+    $sql->bind_param("isii",$rating,$comment,$userid,$cid);
     $sql->execute();
 
     header('Location: cureDesc.php?id='.$cid.'.php');

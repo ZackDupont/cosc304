@@ -46,7 +46,8 @@
               echo('<li class="nav-item">');
               echo('<a class="nav-link" href="login.php">Login</a>');
               echo('</li>');
-            }else{
+            }
+            else{
               echo ('<li class="nav-item">');
               echo ('<a class="nav-link" href="./account.php"> Hello, ' . $_SESSION['username'] . '!</a>');
               echo('</li>');
@@ -55,14 +56,14 @@
               echo('<a class="nav-link" href="shop.php">Shop</a>');
               echo('</li>');
 
-              if(isset($_SESSION['productList'])){
-              echo('<li class="nav-item">');
-              echo('<a class="nav-link" href="showCart.php"> <i class="fa fa-shopping-cart" style="font-size:17px"></i><span class="badge">'. count($_SESSION['productList']) . '</span></a>');
-              echo('</li>');
+            if(isset($_SESSION['productList'])){
+            echo('<li class="nav-item">');
+            echo('<a class="nav-link" href="showCart.php"> <i class="fa fa-shopping-cart" style="font-size:17px"></i><span class="badge">'. count($_SESSION['productList']) . '</span></a>');
+            echo('</li>');
             }else{
-              echo('<li class="nav-item">');
-              echo('<a class="nav-link" href="showCart.php"> <i class="fa fa-shopping-cart" style="font-size:17px"></i><span class="badge">0</span></a>');
-              echo('</li>');
+            echo('<li class="nav-item">');
+            echo('<a class="nav-link" href="showCart.php"> <i class="fa fa-shopping-cart" style="font-size:17px"></i><span class="badge">0</span></a>');
+            echo('</li>');
             }
             echo('<li class="nav-item">');
             echo('<a class="nav-link" href="logout.php">Sign Out</a>');

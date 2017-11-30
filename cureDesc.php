@@ -67,14 +67,15 @@
               echo('<li class="nav-item">');
               echo('<a class="nav-link" href="login.php">Login</a>');
               echo('</li>');
-            }else{
+            }
+            else{
               echo ('<li class="nav-item">');
               echo ('<a class="nav-link" href="./account.php"> Hello, ' . $_SESSION['username'] . '!</a>');
               echo('</li>');
 
-            echo('<li class="nav-item">');
-            echo('<a class="nav-link" href="shop.php">Shop</a>');
-            echo('</li>');
+              echo('<li class="nav-item">');
+              echo('<a class="nav-link" href="shop.php">Shop</a>');
+              echo('</li>');
 
             if(isset($_SESSION['productList'])){
             echo('<li class="nav-item">');
@@ -84,10 +85,10 @@
             echo('<li class="nav-item">');
             echo('<a class="nav-link" href="showCart.php"> <i class="fa fa-shopping-cart" style="font-size:17px"></i><span class="badge">0</span></a>');
             echo('</li>');
-          }
-          echo('<li class="nav-item">');
-          echo('<a class="nav-link" href="logout.php">Sign Out</a>');
-          echo('</li>');
+            }
+            echo('<li class="nav-item">');
+            echo('<a class="nav-link" href="logout.php">Sign Out</a>');
+            echo('</li>');
           }
             ?>
           </ul>
@@ -137,7 +138,10 @@
             echo("<tr><thead><th>Category</th></thead></tr><tr><td colspan='4'>" . $col10 ."</td></tr>");
             echo("</table>");
 
+            
             echo("<h3 align='center'><a style='text-decoration:none' href='addToCart.php?id=" .$col1. "&name=" .$col2. "&price=" .$col8. "'>Add&nbsp;To&nbsp;Cart</a></h3>");
+
+
 
 
             // Reviews
@@ -181,7 +185,7 @@
                       Your Review
                       <input class='form-control' name='comment' placeholder='Write Review...'/>
                       Rating <br />
-                      <input type='number' name='rating' min='1' max='5' />
+                      <input type='number' maxlength='1' name='rating' min='1' max='5' />
                       /5
                       <h4 align='center'><a id='submitReviewForm' onclick='reviewForm.submit()'>Submit Post</a></h4>
                       </form>
@@ -225,7 +229,7 @@
                 </a>
               </li>
               <li class="list-inline-item">
-                <a href="#">
+                <a href="https://github.com/zdupo067/cosc304">
                   <span class="fa-stack fa-lg">
                     <i class="fa fa-circle fa-stack-2x"></i>
                     <i class="fa fa-github fa-stack-1x fa-inverse"></i>
