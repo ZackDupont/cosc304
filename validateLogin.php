@@ -13,7 +13,22 @@ session_start();
         $pass = md5($_POST["password"]);
         // include database connection
         include 'dbConnection.php';
-        // query
+
+        // Check if admin
+        $stmt = $connection->prepare("SELECT doc_name, doc_pass FROM Doctor WHERE doc_name=? AND doc_pass=?");
+        $stmt->bind_param( "ss", $username,$pass);
+        $stmt->execute();
+        $stmt->store_result();
+        $rows = $stmt->num_rows;
+
+        if($rows == 1){
+          $_SESSION['username'] = $username;
+          $_SESSION['admin'] = true;
+          header('Location: index.php');
+        }
+
+
+        // query users
         $stmt = $connection->prepare("SELECT user_name, password FROM Users WHERE user_name=? AND password=?");
         $stmt->bind_param( "ss", $username,$pass);
         $stmt->execute();

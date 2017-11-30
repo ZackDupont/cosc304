@@ -14,7 +14,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Shop</title>
+    <title>My Account</title>
 
     <!-- Bootstrap core CSS -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -30,20 +30,7 @@
   </head>
 
   <body>
-    <style>
-    #searchBtn {
-      padding: 3px 5px 3px 5px;
-      background: #000000;
-      color: #fff;
-      border: 0px solid rgba(0, 0, 0, 0.1);
-      border-radius: 3px;
-    }
-    #searchBtn:hover {
-      background: #2196F3;
-      cursor: pointer;
-    }
 
-</style>
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
       <div class="container">
@@ -80,10 +67,9 @@
             echo('<a class="nav-link" href="showCart.php"> <i class="fa fa-shopping-cart" style="font-size:17px"></i><span class="badge">0</span></a>');
             echo('</li>');
           }
-          echo('<li class="nav-item">');
-          echo('<a class="nav-link" href="logout.php">Sign Out</a>');
-          echo('</li>');
-
+            echo('<li class="nav-item">');
+            echo('<a class="nav-link" href="logout.php">Sign Out</a>');
+            echo('</li>');
           }
             ?>
           </ul>
@@ -101,77 +87,82 @@
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
           <div class="post-preview">
-            <h1 align='center'>SHOP</h1>
+            <h1 align='center'>My Account</h1>
 
 
-
-    <!-- Search Form -->
-    <form id ='search' method="GET" align='center'>
-          <input type="text" name='productName' placeholder=" Search for a product..."/>
-          <button id='searchBtn'>Search</button>
-    </form>
-
-    <br />
-
+          <!-- PHP for search-->
           <?
+          $username = $_SESSION["username"];
+          $uid = "";
           // include database connection
           include 'dbConnection.php';
-          $stmt = $connection->prepare("SELECT cat_id,cat_name FROM Category");
+
+          // Get current user's id
+          $stmt = $connection->prepare("SELECT * FROM Users WHERE user_name = ?");
+          $stmt->bind_param( "s", $username);
           $stmt->execute();
           $stmt->store_result();
-          $stmt->bind_result($col1,$col2);
-          echo("<h1 align='center'>Categories</h1>");
-          echo("<table class='table'><tr>");
+          $stmt->bind_result($col1,$col2,$col3,$col4,$col5,$col6,$col7,$col8,$col9,$col10,$col11);
+
+          echo("<h3 align='center'>Info</h3>");
+          echo("<table class='table'>");
           while($stmt->fetch()){
-            echo("<td align='center'><a href='displayCat.php?id=".$col1."&name=".$col2."'>".$col2."</a></td>");
+          $uid = $col1;
+          echo("<tr><th>User ID</th><td align='right'>" . $col1 ."</td></tr>");
+          echo("<tr><th>Username</th><td align='right'>" . $col2 ."</td></tr>");
+          echo("<tr><th>Password</th><td align='right'>" . $col3 ."</td></tr>");
+          echo("<tr><th>Email</th><td align='right'>" . $col4 ."</td></tr>");
+          echo("<tr><th>DNA</th><td align='right'>" . $col5 ."</td></tr>");
+          echo("<tr><th>Address</th><td align='right'>" . $col6 ."</td></tr>");
+          echo("<tr><th>City</th><td align='right'>" . $col7 ."</td></tr>");
+          echo("<tr><th>Province</th><td align='right'>" . $col8 ."</td></tr>");
+          echo("<tr><th>Postal Code</th><td align='right'>" . $col9 ."</td></tr>");
+          echo("<tr><th>Country</th><td align='right'>" . $col10 ."</td></tr>");
+          echo("<tr><th>Doctor ID</th><td align='right'>" . $col11 ."</td></tr>");
           }
-          echo("<tr></table>");
-          echo("<hr />");
-          mysqli_close($connection);
+          echo("</table>");
 
-          // include database connection
-          include 'dbConnection.php';
-          $name = "";
-          $hasParameter = false;
-          if (isset($_GET['productName'])){
-            $name = $_GET['productName'];
+
+          // Get current user's id
+          $stmt2 = $connection->prepare("SELECT order_id, order_total, order_desc, order_date FROM Orders WHERE user_id = ?");
+          $stmt2->bind_param( "i", $uid);
+          $stmt2->execute();
+          $stmt2->store_result();
+          $stmt2->bind_result($col1,$col2,$col3,$col4);
+          $rows = $stmt2->num_rows;
+
+          echo("<br /><h3 align='center'>Order History</h3>");
+          if($rows > 0){
+          echo("<table class='table table-hover'>");
+          echo("<tr><thead><th>Order ID</th><th>Order Total</th><th>Order Description</th><th>Order Date</th></thead></tr>");
+          while($stmt2->fetch()){
+            echo("<tr><td><a href='showOrder.php?id=". $col1 ."'>".$col1."</a></td><td>$". $col2 ."</td><td>". $col3 ."</td><td>". $col4 ."</td></tr>");
           }
-          $sql = "";
+          echo("</table>");
+        }else{
+          echo("<h1 align='center'>You Haven't Place Any Orders Yet! <a href='shop.php'>Start Shopping</a></h1>");
+        }
 
-          if ($name == "") {
-            echo("<h1 align='center'>All Products</h1>");
-            $sql = "SELECT cure_id, cure_name, injection_site, injection_timing, num_injections, special_reqs, cure_desc, cure_availability, price, cure_image FROM Cure";
-          } else {
-            echo("<h1 align='center'>Products containing '" . $name . "'</h1>");
-            $hasParameter = true;
-            $sql = "SELECT cure_id, cure_name, injection_site, injection_timing, num_injections, special_reqs, cure_desc, cure_availability, price, cure_image FROM Cure WHERE cure_name LIKE ? ";
-            $name = '%' . $name . '%';
-          }
+        // Get current user's id
+        $stmt2 = $connection->prepare("SELECT review_date, review_rating, review_desc, Review.cure_id, cure_name FROM Review, Cure WHERE Review.cure_id = Cure.cure_id AND user_id = ?");
+        $stmt2->bind_param( "i", $uid);
+        $stmt2->execute();
+        $stmt2->store_result();
+        $stmt2->bind_result($col1,$col2,$col3,$col4,$col5);
+        $rows = $stmt2->num_rows;
 
-          // query
-          $stmt = null;
-          if($hasParameter){
-          $stmt = $connection->prepare($sql);
-          $stmt->bind_param( "s", $name);
-          } else {
-            $stmt = $connection->prepare($sql);
-          }
-          $stmt->execute();
-          $stmt->store_result();
-          $stmt->bind_result($col1,$col2,$col3,$col4,$col5,$col6,$col7,$col8,$col9,$col10);
-          $rows = $stmt->num_rows;
-
-
-          echo("<table id='productTable'class='table table-hover' align='center'><thead><tr><th>Cure Image</th><th>Cure Name</th><th>Price</th><th></th></tr></thead>");
-
-          while($stmt->fetch()){
-            echo("<tr><td><img src='".$col10."'/></td><td><a style='text-decoration:none' href='cureDesc.php?id=".$col1."'/>". $col2 ."</a></td><td>$". $col9 ."</td><td><a style='text-decoration:none' href='addToCart.php?id=" .$col1. "&name=" .$col2. "&price=" .$col9. "'>Add&nbsp;To&nbsp;Cart</a></td></tr>");
-          }
-          echo("</table");
-          mysqli_close($connection);
-
-
-          ?>
+        echo("<br /><h3 align='center'>Product Reviews</h3>");
+        if($rows > 0){
+        echo("<table class='table'>");
+        echo("<tr><thead><th>Review Date</th><th>Review&nbsp;Rating</th><th>Review&nbsp;Description</th><th>Cure&nbsp;Name</th></thead></tr>");
+        while($stmt2->fetch()){
+          echo("<tr><td>". $col1 ."</td><td>". $col2 ."/5</td><td>". $col3 ."</td><td>". $col5 ."</td></tr>");
+        }
+        echo("</table>");
+      }else{
+        echo("<h1 align='center'>You Haven't Reviewed Any Products Yet! <a href='shop.php'>Start Shopping</a></h1>");
+      }
+      ?>
 
         </div>
       </div>

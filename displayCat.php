@@ -3,7 +3,8 @@
   if(!isset($_SESSION['username'])){
     header('Location: index.php');
   }
-?>
+    ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -14,7 +15,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Shop</title>
+    <title>Category</title>
 
     <!-- Bootstrap core CSS -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -30,20 +31,7 @@
   </head>
 
   <body>
-    <style>
-    #searchBtn {
-      padding: 3px 5px 3px 5px;
-      background: #000000;
-      color: #fff;
-      border: 0px solid rgba(0, 0, 0, 0.1);
-      border-radius: 3px;
-    }
-    #searchBtn:hover {
-      background: #2196F3;
-      cursor: pointer;
-    }
 
-</style>
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
       <div class="container">
@@ -53,7 +41,7 @@
           <i class="fa fa-bars"></i>
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
-        <ul class="navbar-nav ml-auto">
+          <ul class="navbar-nav ml-auto">
             <?
             if(!isset($_SESSION['username'])){
               echo('<li class="nav-item">');
@@ -101,78 +89,40 @@
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
           <div class="post-preview">
-            <h1 align='center'>SHOP</h1>
-
-
-
-    <!-- Search Form -->
-    <form id ='search' method="GET" align='center'>
-          <input type="text" name='productName' placeholder=" Search for a product..."/>
-          <button id='searchBtn'>Search</button>
-    </form>
-
-    <br />
 
           <?
-          // include database connection
-          include 'dbConnection.php';
-          $stmt = $connection->prepare("SELECT cat_id,cat_name FROM Category");
-          $stmt->execute();
-          $stmt->store_result();
-          $stmt->bind_result($col1,$col2);
-          echo("<h1 align='center'>Categories</h1>");
-          echo("<table class='table'><tr>");
-          while($stmt->fetch()){
-            echo("<td align='center'><a href='displayCat.php?id=".$col1."&name=".$col2."'>".$col2."</a></td>");
+
+          // Check if id is set
+          if(isset($_GET['id']) && isset($_GET['name'])){
+          	$id = $_GET['id'];
+            $name = $_GET['name'];
+
+            // include database connection
+            include 'dbConnection.php';
+
+            // Get current user's id
+            $stmt = $connection->prepare("SELECT cure_id, cure_name, injection_site, injection_timing, num_injections, special_reqs, cure_desc, cure_availability, price, cure_image FROM Cure WHERE cat_id LIKE ? ");
+            $stmt->bind_param( "s", $id);
+            $stmt->execute();
+            $stmt->store_result();
+            $stmt->bind_result($col1,$col2,$col3,$col4,$col5,$col6,$col7,$col8,$col9,$col10);
+
+
+            echo("<h1 align='center'> Products in ".$name."</h1>");
+            echo("<table id='productTable'class='table table-hover' align='center'><thead><tr><th>Cure Image</th><th>Cure Name</th><th>Price</th><th></th></tr></thead>");
+            while($stmt->fetch()){
+              echo("<tr><td><img src='".$col10."'/></td><td><a style='text-decoration:none' href='cureDesc.php?id=".$col1."'/>". $col2 ."</a></td><td>$". $col9 ."</td><td><a style='text-decoration:none' href='addToCart.php?id=" .$col1. "&name=" .$col2. "&price=" .$col9. "'>Add&nbsp;To&nbsp;Cart</a></td></tr>");
+            }
+            echo("</table");
+
+          } else{
+          	header('Location: shop.php');
           }
-          echo("<tr></table>");
-          echo("<hr />");
-          mysqli_close($connection);
-
-          // include database connection
-          include 'dbConnection.php';
-          $name = "";
-          $hasParameter = false;
-          if (isset($_GET['productName'])){
-            $name = $_GET['productName'];
-          }
-          $sql = "";
-
-          if ($name == "") {
-            echo("<h1 align='center'>All Products</h1>");
-            $sql = "SELECT cure_id, cure_name, injection_site, injection_timing, num_injections, special_reqs, cure_desc, cure_availability, price, cure_image FROM Cure";
-          } else {
-            echo("<h1 align='center'>Products containing '" . $name . "'</h1>");
-            $hasParameter = true;
-            $sql = "SELECT cure_id, cure_name, injection_site, injection_timing, num_injections, special_reqs, cure_desc, cure_availability, price, cure_image FROM Cure WHERE cure_name LIKE ? ";
-            $name = '%' . $name . '%';
-          }
-
-          // query
-          $stmt = null;
-          if($hasParameter){
-          $stmt = $connection->prepare($sql);
-          $stmt->bind_param( "s", $name);
-          } else {
-            $stmt = $connection->prepare($sql);
-          }
-          $stmt->execute();
-          $stmt->store_result();
-          $stmt->bind_result($col1,$col2,$col3,$col4,$col5,$col6,$col7,$col8,$col9,$col10);
-          $rows = $stmt->num_rows;
-
-
-          echo("<table id='productTable'class='table table-hover' align='center'><thead><tr><th>Cure Image</th><th>Cure Name</th><th>Price</th><th></th></tr></thead>");
-
-          while($stmt->fetch()){
-            echo("<tr><td><img src='".$col10."'/></td><td><a style='text-decoration:none' href='cureDesc.php?id=".$col1."'/>". $col2 ."</a></td><td>$". $col9 ."</td><td><a style='text-decoration:none' href='addToCart.php?id=" .$col1. "&name=" .$col2. "&price=" .$col9. "'>Add&nbsp;To&nbsp;Cart</a></td></tr>");
-          }
-          echo("</table");
-          mysqli_close($connection);
-
-
           ?>
-
+					<p></p>
+					<h3 align='center'><a href='shop.php'>Continue Shopping </a></h3>
+          </body>
+          </html>
         </div>
       </div>
     </div>

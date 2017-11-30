@@ -3,7 +3,9 @@
   if(!isset($_SESSION['username'])){
     header('Location: index.php');
   }
-?>
+
+    ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -14,7 +16,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Shop</title>
+    <title>Order Details</title>
 
     <!-- Bootstrap core CSS -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -30,20 +32,7 @@
   </head>
 
   <body>
-    <style>
-    #searchBtn {
-      padding: 3px 5px 3px 5px;
-      background: #000000;
-      color: #fff;
-      border: 0px solid rgba(0, 0, 0, 0.1);
-      border-radius: 3px;
-    }
-    #searchBtn:hover {
-      background: #2196F3;
-      cursor: pointer;
-    }
 
-</style>
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
       <div class="container">
@@ -53,7 +42,7 @@
           <i class="fa fa-bars"></i>
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
-        <ul class="navbar-nav ml-auto">
+          <ul class="navbar-nav ml-auto">
             <?
             if(!isset($_SESSION['username'])){
               echo('<li class="nav-item">');
@@ -101,78 +90,75 @@
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
           <div class="post-preview">
-            <h1 align='center'>SHOP</h1>
-
-
-
-    <!-- Search Form -->
-    <form id ='search' method="GET" align='center'>
-          <input type="text" name='productName' placeholder=" Search for a product..."/>
-          <button id='searchBtn'>Search</button>
-    </form>
-
-    <br />
 
           <?
-          // include database connection
-          include 'dbConnection.php';
-          $stmt = $connection->prepare("SELECT cat_id,cat_name FROM Category");
-          $stmt->execute();
-          $stmt->store_result();
-          $stmt->bind_result($col1,$col2);
-          echo("<h1 align='center'>Categories</h1>");
-          echo("<table class='table'><tr>");
-          while($stmt->fetch()){
-            echo("<td align='center'><a href='displayCat.php?id=".$col1."&name=".$col2."'>".$col2."</a></td>");
-          }
-          echo("<tr></table>");
-          echo("<hr />");
-          mysqli_close($connection);
 
-          // include database connection
-          include 'dbConnection.php';
-          $name = "";
-          $hasParameter = false;
-          if (isset($_GET['productName'])){
-            $name = $_GET['productName'];
-          }
-          $sql = "";
+            // Check if id is set
+            if(isset($_GET['id'])){
+              $id = $_GET['id'];
 
-          if ($name == "") {
-            echo("<h1 align='center'>All Products</h1>");
-            $sql = "SELECT cure_id, cure_name, injection_site, injection_timing, num_injections, special_reqs, cure_desc, cure_availability, price, cure_image FROM Cure";
-          } else {
-            echo("<h1 align='center'>Products containing '" . $name . "'</h1>");
-            $hasParameter = true;
-            $sql = "SELECT cure_id, cure_name, injection_site, injection_timing, num_injections, special_reqs, cure_desc, cure_availability, price, cure_image FROM Cure WHERE cure_name LIKE ? ";
-            $name = '%' . $name . '%';
-          }
+              // include database connection
+              include 'dbConnection.php';
 
-          // query
-          $stmt = null;
-          if($hasParameter){
-          $stmt = $connection->prepare($sql);
-          $stmt->bind_param( "s", $name);
-          } else {
-            $stmt = $connection->prepare($sql);
-          }
-          $stmt->execute();
-          $stmt->store_result();
-          $stmt->bind_result($col1,$col2,$col3,$col4,$col5,$col6,$col7,$col8,$col9,$col10);
-          $rows = $stmt->num_rows;
+              // Get items in order
+              $stmt = $connection->prepare("SELECT OrderQuantity.order_id, OrderQuantity.cure_id, quantity, Orders.order_total, cure_name, price FROM OrderQuantity, Orders, Cure WHERE OrderQuantity.order_id = Orders.order_id AND OrderQuantity.cure_id = Cure.cure_id AND Orders.order_id = ?");
+              $stmt->bind_param( "i", $id);
+              $stmt->execute();
+              $stmt->store_result();
+              $stmt->bind_result($col1,$col2,$col3,$col4,$col5,$col6);
+
+              echo("<h1 align='center'> Summary of Order ". $id ."</h1><p></p>");
+              echo("<table class='table'><tr><thead><th>Cure&nbsp;ID</th><th>Item Name</th><th>Quantity</th><th>Cost</th></thead></tr>");
+              while($stmt->fetch()){
+                echo("<tr><td>". $col2. "</td><td>". $col5. "</td><td>". $col3. "</td><td>$". $col6. "</td></tr>");
+              }
+              echo("<tr><td colspan=\"3\" align=\"right\"><b>Order Total (Shipping and Taxes included)</b></td><td align=\"right\">$".str_replace("USD","$",money_format('%i',$col4*1.40))."</td></tr>");
+              echo("</table>");
 
 
-          echo("<table id='productTable'class='table table-hover' align='center'><thead><tr><th>Cure Image</th><th>Cure Name</th><th>Price</th><th></th></tr></thead>");
+              echo("<h3 align='center'>Shipping Info</h3>");
+              // Select shipping info from current order
+              $stmt2 = $connection->prepare("SELECT ship_desc, ship_total, user_card, user_name FROM Shipment WHERE order_id = ?");
+              $stmt2->bind_param( "i", $id);
+              $stmt2->execute();
+              $stmt2->store_result();
+              $stmt2->bind_result($col1,$col2,$col3,$col4);
 
-          while($stmt->fetch()){
-            echo("<tr><td><img src='".$col10."'/></td><td><a style='text-decoration:none' href='cureDesc.php?id=".$col1."'/>". $col2 ."</a></td><td>$". $col9 ."</td><td><a style='text-decoration:none' href='addToCart.php?id=" .$col1. "&name=" .$col2. "&price=" .$col9. "'>Add&nbsp;To&nbsp;Cart</a></td></tr>");
-          }
-          echo("</table");
-          mysqli_close($connection);
+              while($stmt2->fetch()){
+              echo("<table class='table' align='center'><tr><thead><th>Details</th><th>Shipping Cost</th></thead>");
+                echo("<tr><td>" . $col1 . "</td><td>$". $col2. "</td></tr>");
+              echo("</table>");
+              }
 
+              echo("<h3 align='center'>Billing Info</h3>");
+              // Select shipping info from current order
+              $stmt2 = $connection->prepare("SELECT user_card, user_name, method, order_id FROM Payment, Orders WHERE Payment.user_id = Orders.user_id AND order_id = ?");
+              $stmt2->bind_param( "i", $id);
+              $stmt2->execute();
+              $stmt2->store_result();
+              $stmt2->bind_result($col1,$col2,$col3,$col4);
+
+              while($stmt2->fetch()){
+              echo("<table class='table' align='center'><tr><thead><th>Card Number</th><th>Customer Name</th><th>Method</th></thead>");
+                echo("<tr><td>" . $col1 . "</td><td>". $col2. "</td><td>". $col3. "</td></tr>");
+              echo("</table>");
+              }
+
+
+
+
+
+
+
+            } else{
+              header('Location: shop.php');
+            }
 
           ?>
-
+					<p></p>
+					<h3 align='center'><a href='account.php'>Back to Account </a></h3>
+          </body>
+          </html>
         </div>
       </div>
     </div>
