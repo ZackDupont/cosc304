@@ -209,7 +209,9 @@ border-bottom-width: 4px;
             echo('<a class="nav-link" href="showCart.php"> <i class="fa fa-shopping-cart" style="font-size:17px"></i><span class="badge">0</span></a>');
             echo('</li>');
           }
-
+          echo('<li class="nav-item">');
+          echo('<a class="nav-link" href="logout.php">Sign Out</a>');
+          echo('</li>');
           }
             ?>
           </ul>

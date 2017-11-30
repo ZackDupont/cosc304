@@ -3,6 +3,10 @@
   if(!isset($_SESSION['username'])){
     header('Location: index.php');
   }
+  if(!$_SESSION["productList"]){
+    header('Location: shop.php');
+  }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -209,6 +213,9 @@ border-bottom-width: 4px;
             echo('<a class="nav-link" href="showCart.php"> <i class="fa fa-shopping-cart" style="font-size:17px"></i><span class="badge">0</span></a>');
             echo('</li>');
           }
+          echo('<li class="nav-item">');
+          echo('<a class="nav-link" href="logout.php">Sign Out</a>');
+          echo('</li>');
 
           }
             ?>
@@ -311,8 +318,10 @@ border-bottom-width: 4px;
                       $sql->execute();
                     }
 
-                    // Shipping cost
-                    $shipping = $total * 0.25;
+                    // Shipping and Tax cost
+                    $shipping = $total * 0.40;
+
+
 
                     //Insert info into Shipment
                     $sql = $connection->prepare("INSERT INTO Shipment (ship_total, ship_desc, ship_date, user_card, user_name, order_id) VALUES (?,?,?,?,?,?)");
@@ -338,7 +347,7 @@ border-bottom-width: 4px;
                         $sub = str_replace("USD","$",money_format('%i',$col2*$col3));
                         echo("<tr><td>" . $col1 . "</td><td>". $col3 ."</td><td>$". $col2 ."</td><td>$" .$sub ."</td></tr>");
                       }
-                      echo("<tr><td colspan=\"3\" align=\"right\"><b>Order Total (Shipping and Tax Included)</b></td><td align=\"right\">$".str_replace("USD","$",money_format('%i',$col4+$shipping))."</td></tr>");
+                      echo("<tr><td colspan=\"3\" align=\"right\"><b>Order Total (Shipping and Taxes Included)</b></td><td align=\"right\">$".str_replace("USD","$",money_format('%i',$col4+$shipping))."</td></tr>");
                       echo("</table>");
 
 
@@ -353,6 +362,20 @@ border-bottom-width: 4px;
                       while($stmt2->fetch()){
                       echo("<table class='table' align='center'><tr><thead><th>Details</th><th>Shipping Cost</th></thead>");
                         echo("<tr><td>" . $col1 . "</td><td>$". $col2. "</td></tr>");
+                      echo("</table>");
+                      }
+
+                      echo("<h2 align='center'>Billing Info</h2>");
+                      // Select shipping info from current order
+                      $stmt2 = $connection->prepare("SELECT user_card, user_name, method, order_id FROM Payment, Orders WHERE Payment.user_id = Orders.user_id AND order_id = ?");
+                      $stmt2->bind_param( "i", $orderId);
+                      $stmt2->execute();
+                      $stmt2->store_result();
+                      $stmt2->bind_result($col1,$col2,$col3,$col4);
+
+                      while($stmt2->fetch()){
+                      echo("<table class='table' align='center'><tr><thead><th>Card Number</th><th>Customer Name</th><th>Method</th></thead>");
+                        echo("<tr><td>" . $col1 . "</td><td>". $col2. "</td><td>". $col3. "</td></tr>");
                       echo("</table>");
                       }
 

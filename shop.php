@@ -30,7 +30,20 @@
   </head>
 
   <body>
+    <style>
+    #searchBtn {
+      padding: 3px 5px 3px 5px;
+      background: #000000;
+      color: #fff;
+      border: 0px solid rgba(0, 0, 0, 0.1);
+      border-radius: 3px;
+    }
+    #searchBtn:hover {
+      background: #2196F3;
+      cursor: pointer;
+    }
 
+</style>
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
       <div class="container">
@@ -67,6 +80,9 @@
             echo('<a class="nav-link" href="showCart.php"> <i class="fa fa-shopping-cart" style="font-size:17px"></i><span class="badge">0</span></a>');
             echo('</li>');
           }
+          echo('<li class="nav-item">');
+          echo('<a class="nav-link" href="logout.php">Sign Out</a>');
+          echo('</li>');
 
           }
             ?>
@@ -88,14 +104,33 @@
             <h1 align='center'>SHOP</h1>
 
 
+
     <!-- Search Form -->
     <form id ='search' method="GET" align='center'>
-      <input type="text" name='productName' placeholder="Search for a product"/>
+          <input type="text" name='productName' placeholder=" Search for a product..."/>
+          <button id='searchBtn'>Search</button>
     </form>
+
     <br />
 
-          <!-- PHP for search-->
           <?
+          // include database connection
+          include 'dbConnection.php';
+          $stmt = $connection->prepare("SELECT cat_id,cat_name FROM Category");
+          $stmt->execute();
+          $stmt->store_result();
+          $stmt->bind_result($col1,$col2);
+          echo("<h1 align='center'>Categories</h1>");
+          echo("<table class='table'><tr>");
+          while($stmt->fetch()){
+            echo("<td align='center'><a href='displayCat.php?id=".$col1."&name=".$col2."'>".$col2."</a></td>");
+          }
+          echo("<tr></table>");
+          echo("<hr />");
+          mysqli_close($connection);
+
+          // include database connection
+          include 'dbConnection.php';
           $name = "";
           $hasParameter = false;
           if (isset($_GET['productName'])){
@@ -112,8 +147,7 @@
             $sql = "SELECT cure_id, cure_name, injection_site, injection_timing, num_injections, special_reqs, cure_desc, cure_availability, price, cure_image FROM Cure WHERE cure_name LIKE ? ";
             $name = '%' . $name . '%';
           }
-          // include database connection
-          include 'dbConnection.php';
+
           // query
           $stmt = null;
           if($hasParameter){
@@ -135,6 +169,8 @@
           }
           echo("</table");
           mysqli_close($connection);
+
+
           ?>
 
         </div>

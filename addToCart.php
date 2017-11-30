@@ -1,6 +1,11 @@
 <?php
 // Get the current list of products
 session_start();
+
+if(!isset($_SESSION['username'])){
+	header('Location: index.php');
+}
+
 $productList = null;
 if (isset($_SESSION['productList'])){
 	$productList = $_SESSION['productList'];

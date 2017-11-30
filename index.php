@@ -64,7 +64,9 @@
               echo('<a class="nav-link" href="showCart.php"> <i class="fa fa-shopping-cart" style="font-size:17px"></i><span class="badge">0</span></a>');
               echo('</li>');
             }
-
+            echo('<li class="nav-item">');
+            echo('<a class="nav-link" href="logout.php">Sign Out</a>');
+            echo('</li>');
           }
             ?>
           </ul>
@@ -126,7 +128,7 @@
                 </a>
               </li>
               <li class="list-inline-item">
-                <a href="#">
+                <a href="https://github.com/zdupo067/cosc304">
                   <span class="fa-stack fa-lg">
                     <i class="fa fa-circle fa-stack-2x"></i>
                     <i class="fa fa-github fa-stack-1x fa-inverse"></i>

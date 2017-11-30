@@ -67,6 +67,9 @@
             echo('<a class="nav-link" href="showCart.php"> <i class="fa fa-shopping-cart" style="font-size:17px"></i><span class="badge">0</span></a>');
             echo('</li>');
           }
+          echo('<li class="nav-item">');
+          echo('<a class="nav-link" href="logout.php">Sign Out</a>');
+          echo('</li>');
 
           }
             ?>
@@ -94,7 +97,7 @@
           if (isset($_SESSION['productList'])){
           	$productList = $_SESSION['productList'];
           	echo("<h1 align='center'>Your Shopping Cart</h1>");
-          	echo("<table class='table' align='center'><tr><thead><th width='150'>Product Id</th><th>Product Name</th><th>Quantity</th>");
+          	echo("<table class='table' align='center'><tr><thead><th>Product&nbsp;Id</th><th>Product Name</th><th>Quantity</th>");
           	echo("<th>Price</th><th>Subtotal</th></tr></thead>");
 
           	$total = 0;
@@ -102,21 +105,27 @@
           		echo("<tr><td>". $prod['id'] . "</td>");
           		echo("<td>" . $prod['name'] . "</td>");
 
-          		echo("<td align=\"center\"><input name='tbox' type='text' size='1' maxlength='2' min='1' max='100' value='".$prod['quantity']."'</td>");
+          		echo("<td align=\"center\">".$prod['quantity']."</td>");
               $price = $prod['price'];
 
           		echo("<td align=\"right\">$".str_replace("USD","$",money_format('%i',$price))."</td>");
           		echo("<td align=\"right\">$" . str_replace("USD","$",money_format('%i',$prod['quantity']*$price)) . "</td><td><a href='deleteRow.php?id=".$id."'>Remove</a></td></tr>");
           		echo("</tr>");
           		$total = $total +$prod['quantity']*$price;
+
           	}
+
+
+
           	echo("<tr><td colspan=\"4\" align=\"right\"><b>Order Total</b></td><td align=\"right\">".str_replace("USD","$",money_format('%i',$total))."</td></tr>");
           	echo("</table>");
 
-            echo("<h3 align='center'><a href='updateCart.php?id='>Update Cart</a></h3><p></p>");
+
+
+            //echo("<h3 align='center'><a href='updateCart.php?id='>Update Cart</a></h3><p></p>");
           	echo("<h3 align='center'><a href=\"checkout.php\">Check Out</a></h3>");
           } else{
-          	echo("<H1 align='center'>Your Shopping Cart is Empty!</H1>");
+          	echo("<h1 align='center'>Your Shopping Cart is Empty!</h1>");
           }
           ?>
 					<p></p>
