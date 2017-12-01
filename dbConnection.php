@@ -2,8 +2,8 @@
 <?php
 
 $host = "localhost";
-$database = "jarvis";
 $user = "root";
+$database = "Jarvis";
 $password = "";
 
 $connection = mysqli_connect($host, $user, $password, $database);

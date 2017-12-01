@@ -49,14 +49,15 @@
               echo('<li class="nav-item">');
               echo('<a class="nav-link" href="login.php">Login</a>');
               echo('</li>');
-            }else{
+            }
+            else{
               echo ('<li class="nav-item">');
               echo ('<a class="nav-link" href="./account.php"> Hello, ' . $_SESSION['username'] . '!</a>');
               echo('</li>');
 
-            echo('<li class="nav-item">');
-            echo('<a class="nav-link" href="shop.php">Shop</a>');
-            echo('</li>');
+              echo('<li class="nav-item">');
+              echo('<a class="nav-link" href="shop.php">Shop</a>');
+              echo('</li>');
 
             if(isset($_SESSION['productList'])){
             echo('<li class="nav-item">');
@@ -66,7 +67,7 @@
             echo('<li class="nav-item">');
             echo('<a class="nav-link" href="showCart.php"> <i class="fa fa-shopping-cart" style="font-size:17px"></i><span class="badge">0</span></a>');
             echo('</li>');
-          }
+            }
             echo('<li class="nav-item">');
             echo('<a class="nav-link" href="logout.php">Sign Out</a>');
             echo('</li>');
@@ -87,15 +88,19 @@
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
           <div class="post-preview">
-            <h1 align='center'>My Account</h1>
-
 
           <!-- PHP for search-->
           <?
+
           $username = $_SESSION["username"];
           $uid = "";
           // include database connection
           include 'dbConnection.php';
+
+
+          if(!isset($_SESSION["admin"])){
+
+          echo("<h1 align='center'>My Account</h1>");
 
           // Get current user's id
           $stmt = $connection->prepare("SELECT * FROM Users WHERE user_name = ?");
@@ -110,7 +115,6 @@
           $uid = $col1;
           echo("<tr><th>User ID</th><td align='right'>" . $col1 ."</td></tr>");
           echo("<tr><th>Username</th><td align='right'>" . $col2 ."</td></tr>");
-          echo("<tr><th>Password</th><td align='right'>" . $col3 ."</td></tr>");
           echo("<tr><th>Email</th><td align='right'>" . $col4 ."</td></tr>");
           echo("<tr><th>DNA</th><td align='right'>" . $col5 ."</td></tr>");
           echo("<tr><th>Address</th><td align='right'>" . $col6 ."</td></tr>");
@@ -123,7 +127,7 @@
           echo("</table>");
 
 
-          // Get current user's id
+          // Orders
           $stmt2 = $connection->prepare("SELECT order_id, order_total, order_desc, order_date FROM Orders WHERE user_id = ?");
           $stmt2->bind_param( "i", $uid);
           $stmt2->execute();
@@ -160,16 +164,83 @@
         }
         echo("</table>");
       }else{
-        echo("<h1 align='center'>You Haven't Reviewed Any Products Yet! <a href='shop.php'>Start Shopping</a></h1>");
+        echo("<h1 align='center'>You Haven't Reviewed Any Products Yet!</h1>");
+        echo("<h3 align='center'><a href='shop.php'>Start Shopping</a></h3>");
       }
+    }else{
+      echo("<h1 align='center'>Admin</h1>");
+
+      // Get current user's id
+      $stmt2 = $connection->prepare("SELECT user_id, user_name, user_email, doc_id FROM Users");
+      $stmt2->execute();
+      $stmt2->store_result();
+      $stmt2->bind_result($col1,$col2,$col3,$col4);
+      $rows = $stmt2->num_rows;
+
+      echo("<br /><h3 align='center'>All Users</h3>");
+      echo("<h5 align='center'><a href='register.php'>Add New User</a></h5><br />");
+      if($rows > 0){
+        echo("<table class='table table-hover'>");
+        echo("<tr><thead><th>User&nbsp;ID</th><th>User&nbsp;Name</th><th>Email</th><th>Doctor ID</th><th></th></thead></tr>");
+        while($stmt2->fetch()){
+          echo("<tr><td>".$col1."</a></td><td>". $col2 ."</td><td>". $col3 ."</td><td>". $col4 ."</td><td><a href='deleteUser.php?id=".$col1."'>Remove</a></td></tr>");
+        }
+        echo("</table>");
+
+      }else{
+        echo("<h1 align='center'>There Are No Users Yet!</h1><hr />");
+
+      }
+
+      // All product
+      echo("<h3 align='center'>All Products</h3>");
+
+    // query
+    $stmt = $connection->prepare("SELECT cure_id, cure_name, injection_site, injection_timing, num_injections, special_reqs, cure_desc, cure_availability, price, cure_image FROM Cure");
+    $stmt->execute();
+    $stmt->store_result();
+    $stmt->bind_result($col1,$col2,$col3,$col4,$col5,$col6,$col7,$col8,$col9,$col10);
+    $rows = $stmt->num_rows;
+
+
+    echo("<table id='productTable'class='table table-hover' align='center'><thead><tr><th>Cure Image</th><th>Cure Name</th><th>Price</th><th></th></tr></thead>");
+    while($stmt->fetch()){
+      echo("<tr><td><img src='".$col10."'/></td><td><a style='text-decoration:none' href='cureDesc.php?id=".$col1."'/>". $col2 ."</a></td><td>$". $col9 ."</td><td><a href='deleteProduct.php?id=".$col1."'>Remove</a></td></tr>");
+    }
+    echo("</table");
+    echo("<br />");
+    echo("<h5 align='center'><a href='addProduct.php'>Add New Product</a></h5><br />");
+
+      // Orders
+      $stmt2 = $connection->prepare("SELECT order_id, order_total, order_desc, order_date FROM Orders");
+      $stmt2->execute();
+      $stmt2->store_result();
+      $stmt2->bind_result($col1,$col2,$col3,$col4);
+      $rows = $stmt2->num_rows;
+
+
+      if($rows > 0){
+      echo("<table class='table table-hover'>");
+      echo("<tr><thead><th>Order ID</th><th>Order Total</th><th>Order Description</th><th>Order Date</th></thead></tr>");
+      echo("<br /><h3 align='center'>All Orders</h3>");
+      while($stmt2->fetch()){
+
+        echo("<tr><td><a href='showOrder.php?id=". $col1 ."'>".$col1."</a></td><td>$". $col2 ."</td><td>". $col3 ."</td><td>". $col4 ."</td></tr>");
+      }
+      echo("</table>");
+      }else{
+      echo("<br /><h3 align='center'>All Orders</h3>");
+      echo("<h1 align='center'>You Haven't Place Any Orders Yet! <a href='shop.php'>Start Shopping</a></h1>");
+      }
+
+} // End of Admin else
       ?>
 
         </div>
       </div>
     </div>
   </div>
-
-    <hr>
+<hr>
 
     <!-- Footer -->
     <footer>
@@ -194,7 +265,7 @@
                 </a>
               </li>
               <li class="list-inline-item">
-                <a href="#">
+                <a href="https://github.com/zdupo067/cosc304">
                   <span class="fa-stack fa-lg">
                     <i class="fa fa-circle fa-stack-2x"></i>
                     <i class="fa fa-github fa-stack-1x fa-inverse"></i>

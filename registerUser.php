@@ -48,12 +48,11 @@ if(isset($_SESSION['username'])){
         $sql->bind_param("sssssssssi", $username, $pass, $email, $dna, $address, $city, $province, $postal, $country, $docid);
         $sql->execute();
 
-        $_SESSION['username'] = $username;
-        header('Location: index.php');
+        header('Location: account.php');
         }
         }
         else{
-          header('Location: register.php');
+          header('Location: account.php');
         }
         mysqli_close($connection);
       }

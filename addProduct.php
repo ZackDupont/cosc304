@@ -8,7 +8,7 @@ if(!isset($_SESSION['admin'])){
 <html lang="en" >
 <head>
   <meta charset="UTF-8">
-  <title>Register</title>
+  <title>Add product</title>
   <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
@@ -204,53 +204,37 @@ footer a, footer a:link {
     </style>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
-
 </head>
 
 <body>
   <div class="wrapper">
-  <form class="login" method="POST" action="./registerUser.php" >
-    <p class="title">Register User</p>
-    <?php if(!empty($_SESSION['errMsg'])) { echo $_SESSION['errMsg']; } ?>
-    <?php unset($_SESSION['errMsg']); ?>
-    Username:<input type="text" name="username"placeholder="Username" autofocus required/>
-    Password:<input type="password" name="password"placeholder="Password" required/>
-    Email:<input type="email" name="email"placeholder="Email" required/>
-    DNA:  <input type="text" name="dna" placeholder="dna" required/>
-    Address:<input type="text" name="address" placeholder="Address" required/>
-    <input type="text" name="city" placeholder="City" required/>
-    Province:
-    <select name="province"required>
+  <form class="login" method="POST" action="insertProduct.php" enctype="multipart/form-data" >
+    <p class="title">Add New Product</p>
+    Cure Name:<input type="text" name="cure_name" placeholder="Cure Name" autofocus required/>
+    Injection Site:<input type="text" name="injection_site" placeholder="Injection Site" required/>
+    Injection Timing:<input type="text" name="injection_timing" placeholder="Injection Timing" required/>
+    Number of Injections:<input type="number" maxlength="3" min='1' max='100'name="num_injections" placeholder="Number of Injections" required/>
+    Special Requirements:<input type="text" name="special_reqs" placeholder="Special Requirements" required/>
+    Description:<input type="text" name="cure_desc" placeholder="Cure Description" required/>
+    Cure Availability:<input type="text" name="cure_availability" placeholder="Cure Availability" required/>
+    Category ID:
+    <select name='cat_id' required>
       <option value="">Please select an option</option>
-      <option value="AB">Alberta</option>
-      <option value="BC">British Columbia</option>
-      <option value="MB">Manitoba</option>
-      <option value="NB">New Brunswick</option>
-      <option value="NL">Newfoundland and Labrador</option>
-      <option value="NT">Northwest Territories</option>
-      <option value="NS">Nova Scotia</option>
-      <option value="NU">Nunavut</option>
-      <option value="ON">Ontario</option>
-      <option value="PEI">Prince Edward Island</option>
-      <option value="QC">Quebec</option>
-      <option value="SK">Saskatchewan</option>
-      <option value="YT">Yukon</option>
+      <option value=1>1</option>
+      <option value=2>2</option>
+      <option value=3>3</option>
+      <option value=4>4</option>
+      <option value=5>5</option>
+      <option value=6>6</option>
+      <option value=7>7</option>
     </select>
-    <p></p>
-    Postal Code:<input type="text" name="postal" pattern="[A-Za-z][0-9][A-Za-z] [0-9][A-Za-z][0-9]" placeholder="Ex. V4R 5B3" required/>
-    Country:
     <br />
-    <select name="country"required>
-      <option value="">Please select an option</option>
-      <option value="Canada">Canada</option>
-    </select>
-    <p></p>
-    Doctor ID:<input type="text" name="docid" placeholder="Doctor ID" required/>
+      Price:<input type="text" name="price" placeholder="EX 150.00" required/>
+      Image: <input type="file" name="image"/>
     <button>
       <i class="spinner"></i>
-      <span class="state">Register</span>
+      <span class="state">Add Product</span>
     </button>
-
     </p>
   </form>
 </div>

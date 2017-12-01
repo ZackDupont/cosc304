@@ -37,9 +37,6 @@
           <li class="nav-item">
             <a class="nav-link" href="index.php">Home</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="register.php">Register</a>
-          </li>
         </ul>
       </div>
     </div>
@@ -220,7 +217,6 @@ footer a, footer a:link {
       <?php if(!empty($_SESSION['errMsg'])) { echo $_SESSION['errMsg']; } ?>
     </div>
     <?php unset($_SESSION['errMsg']); ?>
-    <a href="./register.php">Need an Account?</a>
     <button>
       <i class="spinner"></i>
       <span class="state">Log in</span>
