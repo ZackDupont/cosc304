@@ -1,10 +1,10 @@
 
 <?php
 
-$host = "localhost";
-$database = "jarvis";
-$user = "root";
-$password = "";
+$host = "cosc304.ok.ubc.ca/";
+$user = "zdupont";
+$database = "cosc304.ok.ubc.ca/db_" . $user;
+$password = "52122158";
 
 $connection = mysqli_connect($host, $user, $password, $database);
 

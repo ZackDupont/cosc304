@@ -292,7 +292,7 @@ border-bottom-width: 4px;
                     if(!$rows > 0){
                       // Insert info into Payment
                        $sql = $connection->prepare("INSERT INTO Payment (user_card, user_name, method, user_id) VALUES (?,?,?,?)");
-                       $sql->bind_param("sssi", $card, $username, $method, $id);
+                       $sql->bind_param("sssi", $card, $username, $method, $user_id);
                        $sql->execute();
                     }
 
@@ -350,7 +350,7 @@ border-bottom-width: 4px;
                         $sub = str_replace("USD","$",money_format('%i',$col3*$col4));
                         echo("<tr><td>" . $col2 . "</td><td>". $col4 ."</td><td>$". $col5 ."</td><td>$" .$sub ."</td></tr>");
                       }
-                      echo("<tr><td colspan=\"3\" align=\"right\"><b>Order Total (Shipping and Taxes Included)</b></td><td align=\"right\">$".str_replace("USD","$",money_format('%i',$col4+$shipping))."</td></tr>");
+                      echo("<tr><td colspan=\"3\" align=\"right\"><b>Order Total (Shipping and Taxes Included)</b></td><td align=\"right\">$".str_replace("USD","$",money_format('%i',$sub+$shipping))."</td></tr>");
                       echo("</table>");
 
                       $cid = $col1;
@@ -366,8 +366,6 @@ border-bottom-width: 4px;
                         $stmt = $connection->prepare("UPDATE Cure SET cure_availability = cure_availability - $col4 WHERE cure_id = ?");
                         $stmt->bind_param( "i", $cid);
                         $stmt->execute();
-                      }else{
-                        echo("<h3 align='center'>Currently Out of " . $cname . "</h3>");
                       }
 
                       echo("<h2 align='center'>Shipping Info</h2>");

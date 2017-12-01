@@ -183,7 +183,7 @@
         echo("<table class='table table-hover'>");
         echo("<tr><thead><th>User&nbsp;ID</th><th>User&nbsp;Name</th><th>Email</th><th>Doctor ID</th><th></th></thead></tr>");
         while($stmt2->fetch()){
-          echo("<tr><td>".$col1."</a></td><td>". $col2 ."</td><td>". $col3 ."</td><td>". $col4 ."</td><td><a href='deleteUser.php?id=". $col1 ."'>Remove</a></td></tr>");
+          echo("<tr><td>".$col1."</a></td><td>". $col2 ."</td><td>". $col3 ."</td><td>". $col4 ."</td><td><a href='deleteUser.php?id=".$col1."'>Remove</a></td></tr>");
         }
         echo("</table>");
 
