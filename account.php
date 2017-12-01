@@ -115,7 +115,6 @@
           $uid = $col1;
           echo("<tr><th>User ID</th><td align='right'>" . $col1 ."</td></tr>");
           echo("<tr><th>Username</th><td align='right'>" . $col2 ."</td></tr>");
-          echo("<tr><th>Password</th><td align='right'>" . $col3 ."</td></tr>");
           echo("<tr><th>Email</th><td align='right'>" . $col4 ."</td></tr>");
           echo("<tr><th>DNA</th><td align='right'>" . $col5 ."</td></tr>");
           echo("<tr><th>Address</th><td align='right'>" . $col6 ."</td></tr>");
@@ -179,6 +178,7 @@
       $rows = $stmt2->num_rows;
 
       echo("<br /><h3 align='center'>All Users</h3>");
+      echo("<h5 align='center'><a href='register.php'>Add New User</a></h5><br />");
       if($rows > 0){
         echo("<table class='table table-hover'>");
         echo("<tr><thead><th>User&nbsp;ID</th><th>User&nbsp;Name</th><th>Email</th><th>Doctor ID</th><th></th></thead></tr>");
@@ -186,10 +186,10 @@
           echo("<tr><td>".$col1."</a></td><td>". $col2 ."</td><td>". $col3 ."</td><td>". $col4 ."</td><td><a href='deleteUser.php?id=". $col1 ."'>Remove</a></td></tr>");
         }
         echo("</table>");
-        echo("<h5 align='center'><a href='register.php'>Add New User</a></h5><br />");
+
       }else{
         echo("<h1 align='center'>There Are No Users Yet!</h1><hr />");
-        echo("<h5 align='center'><a href='register.php'>Add New User</a></h5><br />");
+
       }
 
       // All product
@@ -205,11 +205,11 @@
 
     echo("<table id='productTable'class='table table-hover' align='center'><thead><tr><th>Cure Image</th><th>Cure Name</th><th>Price</th><th></th></tr></thead>");
     while($stmt->fetch()){
-      echo("<tr><td><img src='".$col10."'/></td><td><a style='text-decoration:none' href='cureDesc.php?id=".$col1."'/>". $col2 ."</a></td><td>$". $col9 ."</td><td></td></tr>");
+      echo("<tr><td><img src='".$col10."'/></td><td><a style='text-decoration:none' href='cureDesc.php?id=".$col1."'/>". $col2 ."</a></td><td>$". $col9 ."</td><td><a href='deleteProduct.php?id=".$col1."'>Remove</a></td></tr>");
     }
     echo("</table");
     echo("<br />");
-
+    echo("<h5 align='center'><a href='addProduct.php'>Add New Product</a></h5><br />");
 
       // Orders
       $stmt2 = $connection->prepare("SELECT order_id, order_total, order_desc, order_date FROM Orders");
@@ -233,29 +233,14 @@
       echo("<h1 align='center'>You Haven't Place Any Orders Yet! <a href='shop.php'>Start Shopping</a></h1>");
       }
 
-
-
-
-
-
-
-
-
-
-
 } // End of Admin else
-
-
-
-
       ?>
 
         </div>
       </div>
     </div>
   </div>
-
-    <hr>
+<hr>
 
     <!-- Footer -->
     <footer>

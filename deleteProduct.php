@@ -5,14 +5,14 @@
   }
 
   if(isset($_GET['id'])){
-    $uid = $_GET['id'];
+    $cid = $_GET['id'];
 
     // include database connection
     include 'dbConnection.php';
 
     // Delete user by id
-    $stmt = $connection->prepare("DELETE FROM Users WHERE user_id = ?");
-    $stmt->bind_param( "i", $uid);
+    $stmt = $connection->prepare("DELETE FROM Cure WHERE cure_id = ?");
+    $stmt->bind_param( "i", $cid);
     $stmt->execute();
 
     header('Location: account.php');
